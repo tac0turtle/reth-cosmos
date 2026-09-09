@@ -1,0 +1,29 @@
+{
+  "name": "cosmos-dev-client",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format:check": "prettier --check src",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit",
+    "build": "tsc",
+    "test": "node --import tsx --test src/*.test.ts",
+    "demo": "node --import tsx src/demo.ts",
+    "fixture": "node --import tsx src/fixture.ts",
+    "e2e": "node --import tsx src/e2e.ts"
+  },
+  "dependencies": {
+    "@cosmjs/amino": "0.36.0",
+    "@cosmjs/crypto": "0.36.0",
+    "@cosmjs/encoding": "0.36.0",
+    "ethers": "6.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.0",
+    "eslint": "9.34.0",
+    "prettier": "3.6.2",
+    "tsx": "4.20.5",
+    "typescript": "5.9.2",
+    "typescript-eslint": "8.41.0"
+  }
+}

@@ -1,0 +1,56 @@
+diff --git a/crates/consensus/common/src/validation.rs b/crates/consensus/common/src/validation.rs
+index 9fcac6f..58f5fc1 100644
+--- a/crates/consensus/common/src/validation.rs
++++ b/crates/consensus/common/src/validation.rs
+@@ -1,7 +1,7 @@
+ //! Collection of methods for block validation.
+ 
+-use alloy_consensus::{BlockHeader as _, EMPTY_OMMER_ROOT_HASH};
+-use alloy_eips::{eip4844::DATA_GAS_PER_BLOB, eip7840::BlobParams};
++use alloy_consensus::{transaction::SignerRecoverable, BlockHeader as _, EMPTY_OMMER_ROOT_HASH};
++use alloy_eips::{eip4844::DATA_GAS_PER_BLOB, eip7840::BlobParams, Typed2718};
+ use alloy_primitives::B256;
+ use reth_chainspec::{EthChainSpec, EthereumHardfork, EthereumHardforks};
+ use reth_consensus::ConsensusError;
+@@ -167,6 +167,15 @@ where
+     B: Block,
+     ChainSpec: EthChainSpec + EthereumHardforks,
+ {
++    // Consensus validation must repeat authorization even when the pool is bypassed.
++    for tx in block.body().transactions() {
++        if tx.ty() == alloy_consensus::transaction::cosmos::TX_TYPE {
++            if chain_spec.genesis_hash() != alloy_consensus::transaction::cosmos::GENESIS_HASH {
++                return Err(ConsensusError::TransactionSignerRecoveryError);
++            }
++            tx.recover_signer().map_err(|_| ConsensusError::TransactionSignerRecoveryError)?;
++        }
++    }
+     post_merge_hardfork_fields(block, chain_spec)?;
+ 
+     // Check transaction root
+diff --git a/crates/ethereum/node/src/node.rs b/crates/ethereum/node/src/node.rs
+index 00b3bb4..e745dbf 100644
+--- a/crates/ethereum/node/src/node.rs
++++ b/crates/ethereum/node/src/node.rs
+@@ -684,6 +684,7 @@ where
+ 
+         let validator =
+             TransactionValidationTaskExecutor::eth_builder(ctx.provider().clone(), evm_config)
++                .with_custom_tx_type(126)
+                 .set_eip4844(!blobs_disabled)
+                 .kzg_settings(ctx.kzg_settings()?)
+                 .with_max_tx_input_bytes(ctx.config().txpool.max_tx_input_bytes)
+diff --git a/crates/net/network/src/metrics.rs b/crates/net/network/src/metrics.rs
+index c94c9eb..fe784cc 100644
+--- a/crates/net/network/src/metrics.rs
++++ b/crates/net/network/src/metrics.rs
+@@ -625,6 +625,9 @@ impl TxTypesCounter {
+             TxType::Eip2930 => {
+                 self.eip2930 += 1;
+             }
++            TxType::Cosmos => {
++                self.other += 1;
++            }
+             TxType::Eip1559 => {
+                 self.eip1559 += 1;
+             }

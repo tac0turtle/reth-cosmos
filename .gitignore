@@ -1,0 +1,11 @@
+/target/
+/data/
+/node_modules/
+/client/dist/
+/.artifacts/
+
+/vendor/reth/
+/vendor/alloy-consensus-any/
+/vendor/*/.cargo-ok
+/vendor/*/Cargo.lock
+/client/node_modules/

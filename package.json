@@ -1,0 +1,11 @@
+{
+  "name": "reth-cosmos-experiment",
+  "private": true,
+  "packageManager": "pnpm@10.30.3",
+  "scripts": {
+    "start": "sh scripts/start.sh",
+    "demo": "pnpm --dir client demo",
+    "check": "sh scripts/check.sh",
+    "e2e": "pnpm --dir client e2e"
+  }
+}
