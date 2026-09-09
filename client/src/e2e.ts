@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { spawn, type ChildProcess } from "node:child_process";
-import { mkdir, mkdtemp, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, writeFile, readFile, cp } from "node:fs/promises";
 import { createWriteStream } from "node:fs";
 import { resolve } from "node:path";
 import { getBytes, toBeHex } from "ethers";
@@ -64,10 +64,10 @@ async function stop() {
   node = undefined;
 }
 
-async function importBlocks(datadir: string, file: string) {
+async function importBlocks(datadir: string, file: string, name = "import") {
   const args = [
     "--log.file.directory",
-    resolve(directory, "import-logs"),
+    resolve(directory, `${name}-logs`),
     "import",
     "--chain",
     resolve(root, "genesis.json"),
@@ -75,7 +75,7 @@ async function importBlocks(datadir: string, file: string) {
     datadir,
     file,
   ];
-  const log = createWriteStream(resolve(directory, "import.log"));
+  const log = createWriteStream(resolve(directory, `${name}.log`));
   const child = spawn(resolve(root, "target/debug/reth-cosmos-dev"), args, {
     cwd: root,
     stdio: ["ignore", "pipe", "pipe"],
@@ -96,7 +96,7 @@ async function importBlocks(datadir: string, file: string) {
       clearTimeout(timer);
       log.end();
       if (code === 0) resolveExit();
-      else reject(new Error(`import exited ${code}; see import.log`));
+      else reject(new Error(`import exited ${code}; see ${name}.log`));
     });
   });
 }
@@ -131,6 +131,39 @@ try {
   console.log(
     "Reth block import re-executed the chain and reproduced the state root and complete snapshot",
   );
+  await stop();
+  const legacy = JSON.parse(
+    await readFile(
+      resolve(root, "fixtures/pre-migration-chain/verified-state.json"),
+      "utf8",
+    ),
+  ) as typeof result;
+  const legacyImport = resolve(directory, "pre-migration-import");
+  await importBlocks(
+    legacyImport,
+    resolve(root, "fixtures/pre-migration-chain/blocks.rlp"),
+    "pre-migration-import",
+  );
+  await start(legacyImport, "pre-migration-start");
+  assert.deepEqual(await snapshot(legacy.receipts), legacy.state);
+  console.log(
+    "Pre-migration blocks reproduced the original state and RPC responses",
+  );
+  await stop();
+  if (process.env.COSMOS_LEGACY_DATADIR) {
+    const legacyCopy = resolve(directory, "pre-migration-database");
+    await cp(resolve(process.env.COSMOS_LEGACY_DATADIR), legacyCopy, {
+      recursive: true,
+      errorOnExist: true,
+      force: false,
+    });
+    await start(legacyCopy, "pre-migration-database-start");
+    assert.deepEqual(await snapshot(legacy.receipts), legacy.state);
+    console.log(
+      "Pre-migration database opened with identical transactions, receipts, balances, nonces, and state root",
+    );
+    await stop();
+  }
   await writeFile(
     resolve(directory, "PASS"),
     "All end-to-end assertions passed.\n",

@@ -10,11 +10,15 @@ if [ "$actual" != "$revision" ]; then
   echo "vendor/reth has revision $actual; expected $revision. Existing files were preserved." >&2
   exit 1
 fi
-patch=$(pwd)/patches/reth-v2.4.1.patch
-if git -C vendor/reth apply --reverse --check "$patch" 2>/dev/null; then
-  echo "Reth experiment patch already applied."
-else
-  git -C vendor/reth apply --check "$patch"
-  git -C vendor/reth apply "$patch"
-fi
+# Remove only the exact patch shipped by the first implementation.
+# Unexpected user changes are preserved and rejected by verify-source.py.
+python3 - <<'PYTHON'
+import hashlib
+import subprocess
+patch = subprocess.check_output(["git", "-C", "vendor/reth", "diff", "--binary", "HEAD"])
+if hashlib.sha256(patch).hexdigest() == "8ca2f82e8255f7bd196d835576c5ebc2961a5c097786fa574f9160d2c689b035":
+    subprocess.run(["git", "-C", "vendor/reth", "apply", "--reverse", "--check", "-"], input=patch, check=True)
+    subprocess.run(["git", "-C", "vendor/reth", "apply", "--reverse", "-"], input=patch, check=True)
+    print("Removed the recognized legacy Reth experiment patch.")
+PYTHON
 python3 scripts/verify-source.py

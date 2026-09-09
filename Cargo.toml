@@ -6,22 +6,58 @@ rust-version = "1.95"
 publish = false
 
 [dependencies]
-eyre = "0.6"
-alloy-primitives = "=1.6.1"
-cosmos-auth = { path = "crates/cosmos-auth" }
-jsonrpsee = { version = "0.26", features = ["server"] }
-tokio = { version = "1", features = ["sync"] }
-reth-ethereum = { path = "vendor/reth/crates/ethereum/reth", features = ["node", "cli", "consensus"] }
-clap = { version = "4.5", features = ["derive"] }
-
-[dev-dependencies]
 alloy-consensus = { version = "=2.1.1", features = ["k256", "serde"] }
 alloy-eips = "=2.1.1"
-alloy-genesis = "=2.1.1"
+alloy-evm = "=0.37.1"
+alloy-network = "=2.1.1"
+alloy-primitives = "=1.6.1"
 alloy-rlp = "0.3"
-k256 = { version = "0.13", features = ["ecdsa"] }
+alloy-rpc-types-engine = "=2.1.1"
+alloy-rpc-types-eth = "=2.1.1"
+clap = { version = "4.5", features = ["derive"] }
+cosmos-auth = { path = "crates/cosmos-auth" }
+eyre = "0.6"
+jsonrpsee = { version = "0.26", features = ["server"] }
+reth-basic-payload-builder = { path = "vendor/reth/crates/payload/basic" }
+reth-chainspec = { path = "vendor/reth/crates/chainspec" }
 reth-codecs = "=0.5.2"
+reth-consensus = { path = "vendor/reth/crates/consensus/consensus" }
+reth-consensus-common = { path = "vendor/reth/crates/consensus/common" }
+reth-engine-local = { path = "vendor/reth/crates/engine/local" }
+reth-engine-primitives = { path = "vendor/reth/crates/engine/primitives" }
+reth-errors = { path = "vendor/reth/crates/errors" }
+reth-ethereum = { path = "vendor/reth/crates/ethereum/reth", features = ["node", "cli", "consensus"] }
+reth-ethereum-consensus = { path = "vendor/reth/crates/ethereum/consensus" }
+reth-ethereum-engine-primitives = { path = "vendor/reth/crates/ethereum/engine-primitives" }
+reth-ethereum-payload-builder = { path = "vendor/reth/crates/ethereum/payload" }
+reth-evm = { path = "vendor/reth/crates/evm/evm" }
+reth-evm-ethereum = { path = "vendor/reth/crates/ethereum/evm" }
+reth-execution-cache = { path = "vendor/reth/crates/engine/execution-cache" }
+reth-execution-types = { path = "vendor/reth/crates/evm/execution-types" }
+reth-node-api = { path = "vendor/reth/crates/node/api" }
+reth-node-builder = { path = "vendor/reth/crates/node/builder" }
+reth-node-ethereum = { path = "vendor/reth/crates/ethereum/node" }
+reth-payload-builder = { path = "vendor/reth/crates/payload/builder" }
+reth-payload-builder-primitives = { path = "vendor/reth/crates/payload/builder-primitives" }
+reth-payload-primitives = { path = "vendor/reth/crates/payload/primitives" }
+reth-primitives-traits = { version = "=0.5.2", features = ["reth-codec"] }
+reth-provider = { path = "vendor/reth/crates/storage/provider" }
+reth-revm = { path = "vendor/reth/crates/revm" }
+reth-rpc = { path = "vendor/reth/crates/rpc/rpc" }
+reth-rpc-convert = { path = "vendor/reth/crates/rpc/rpc-convert" }
+reth-rpc-eth-types = { path = "vendor/reth/crates/rpc/rpc-eth-types" }
+reth-storage-api = { path = "vendor/reth/crates/storage/storage-api" }
+reth-storage-errors = { path = "vendor/reth/crates/storage/errors" }
+reth-transaction-pool = { path = "vendor/reth/crates/transaction-pool" }
+revm = "=41.0.0"
+serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+tokio = { version = "1", features = ["sync"] }
+tracing = "0.1"
+
+[dev-dependencies]
+alloy-genesis = "=2.1.1"
+k256 = { version = "0.13", features = ["ecdsa"] }
 
 [profile.dev]
 debug = 0
@@ -35,10 +71,3 @@ debug = 0
 [workspace]
 members = ["crates/cosmos-auth"]
 exclude = ["vendor/reth"]
-
-[patch.crates-io]
-alloy-consensus = { path = "vendor/alloy-consensus" }
-alloy-evm = { path = "vendor/alloy-evm" }
-reth-codecs = { path = "vendor/reth-codecs" }
-alloy-rpc-types-eth = { path = "vendor/alloy-rpc-types-eth" }
-alloy-network = { path = "vendor/alloy-network" }

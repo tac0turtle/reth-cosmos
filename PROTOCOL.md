@@ -52,7 +52,7 @@ transaction_hash = Keccak256(raw)
 
 The payload is a byte string containing the encoded inner list. The signature is a single 64-byte string. No Ethereum `v` or recovery parity is encoded. Decoders reject trailing data, unsupported versions, wrong field lengths, non-minimal RLP, and alternate encodings. Maximum raw size is 33,280 bytes; maximum calldata is 32,768 bytes. Size and scalar constraints are checked before expensive cryptography.
 
-For reuse of Alloy's generic storage machinery, the Rust implementation holds the actual r/s scalars in `Signed<TxCosmos>`, with an internal parity invariant of false. Custom wire and RPC serializers omit that parity. All sender-recovery paths dispatch to Cosmos verification, including generic signed/typed conversions.
+The chain-owned `CosmosSigned` container holds the operation, public key, original r/s scalars, and immutable cached wire bytes/hash. Its internal signature parity is fixed to false solely for compatibility with the existing compact storage format; wire and RPC serializers omit it. The local transaction envelope explicitly dispatches all Cosmos sender-recovery paths to ADR-036 verification. Standard Ethereum variants use the unmodified upstream envelope.
 
 ## RPC and execution
 

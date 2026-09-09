@@ -3,7 +3,6 @@ set -eu
 cd "$(dirname "$0")/.."
 python3 scripts/verify-source.py
 cargo +nightly fmt -p reth-cosmos-dev -p cosmos-auth --check
-python3 scripts/check-vendor-format.py
 cargo clippy --workspace --all-targets --locked -- -D warnings
 cargo build --locked
 cargo test --workspace --locked

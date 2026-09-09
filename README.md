@@ -35,7 +35,7 @@ Run only the isolated experiment:
 pnpm e2e
 ```
 
-`e2e` creates a unique directory under `.artifacts/`, starts localhost RPC on ports 18545/18551, shuts the node down, restarts it, and compares transactions, receipts, balances, nonces, storage, and the block state root. It then imports the exported RLP blocks through Reth's sync pipeline into a second fresh database and repeats the comparison. Logs, raw blocks, a verified state snapshot, and a `PASS` marker remain in that directory. Those ports must be free. No existing data directory is deleted.
+`e2e` creates a unique directory under `.artifacts/`, starts localhost RPC on ports 18545/18551, shuts the node down, restarts it, and compares transactions, receipts, balances, nonces, storage, and the block state root. It then imports the exported RLP blocks through Reth's sync pipeline into a second fresh database and repeats the comparison. It also imports the committed pre-migration block fixture and checks its original state and RPC responses. Logs, raw blocks, a verified state snapshot, and a `PASS` marker remain in that directory. Those ports must be free. No existing data directory is deleted.
 
 ## Accounts and contracts
 
@@ -59,9 +59,11 @@ The launch script bounds each pool subpool to 1,024 transactions and 16 MB, with
 
 ## Source and validation boundaries
 
-Reth is pinned to [v2.4.1](https://github.com/paradigmxyz/reth/releases/tag/v2.4.1), commit `8eb210175687c9f0c889a3b6795c16781d830e3a`. `scripts/bootstrap.sh` fetches that revision and applies `patches/reth-v2.4.1.patch`. It preserves an existing checkout and fails on unexpected changes. `scripts/verify-source.py` checks the exact source diff.
+Reth is pinned to [v2.4.1](https://github.com/paradigmxyz/reth/releases/tag/v2.4.1), commit `8eb210175687c9f0c889a3b6795c16781d830e3a`. `scripts/bootstrap.sh` fetches that unmodified revision. Alloy and `reth-codecs` are ordinary locked registry dependencies. There are no upstream source patches. `scripts/verify-source.py` checks the source revision, clean checkout, and dependency boundaries.
 
-The executable uses Reth's node builder and RPC extension APIs. Reth's default node fixes its primitives to Alloy's Ethereum envelope, so this experiment also vendors five small dependencies to extend that envelope through storage, EVM conversion, and RPC. [VENDOR.md](VENDOR.md) identifies those changes. Upstream Reth itself has three focused changes: pool type registration, independent consensus authorization checks, and transaction-type metrics.
+The executable uses a local `CosmosNode` with chain-owned transaction primitives, consensus, EVM, pool, payload, and RPC adapters. Standard Ethereum transactions are wrapped unchanged in the upstream Alloy envelope. Generic upstream codecs retain the original database layout. [VENDOR.md](VENDOR.md) maps the components and documents the portions adapted from Reth that still need review during upgrades.
+
+Existing chain data can be reused after rebuilding. When upgrading from the initial implementation, bootstrap removes only its recognized Reth patch and preserves unexpected user changes by failing. No genesis or database migration is needed.
 
 Authorization is checked during sender recovery, including the unchecked and buffered paths, and again during pre-execution block validation. Block import validates signatures even without pool admission. Execution uses ordinary EIP-1559 fee rules and the recovered Cosmos sender; receipts retain type `0x7e`. Existing Ethereum transaction types retain their original authorization.
 
