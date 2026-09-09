@@ -7,7 +7,7 @@ publish = false
 [dependencies]
 alloy-primitives = { version = "=1.6.1", features = ["rlp", "serde"] }
 alloy-rlp = "0.3"
-alloy-serde = "=2.1.1"
+alloy-serde = "=2.3.0"
 base64 = "0.22"
 bech32 = "0.9"
 k256 = { version = "0.13", features = ["ecdsa"] }

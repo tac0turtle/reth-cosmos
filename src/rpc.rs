@@ -16,6 +16,7 @@ pub struct CosmosRpcTypes;
 pub type RpcTransaction = alloy_rpc_types_eth::Transaction<Transaction>;
 pub type RpcReceiptInner = ReceiptWithBloom<EthereumReceipt<CosmosTxType, Log>>;
 impl RpcTypes for CosmosRpcTypes {
+    type Log = Log;
     type Header = alloy_rpc_types_eth::Header;
     type Receipt = alloy_rpc_types_eth::TransactionReceipt<RpcReceiptInner>;
     type TransactionResponse = RpcTransaction;

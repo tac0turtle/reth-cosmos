@@ -6,57 +6,57 @@ rust-version = "1.95"
 publish = false
 
 [dependencies]
-alloy-consensus = { version = "=2.1.1", features = ["k256", "serde"] }
-alloy-eips = "=2.1.1"
-alloy-evm = "=0.37.1"
-alloy-network = "=2.1.1"
+alloy-consensus = { version = "=2.3.0", features = ["k256", "serde"] }
+alloy-eips = "=2.3.0"
+alloy-evm = "=0.38.0"
+alloy-network = "=2.3.0"
 alloy-primitives = "=1.6.1"
 alloy-rlp = "0.3"
-alloy-rpc-types-engine = "=2.1.1"
-alloy-rpc-types-eth = "=2.1.1"
+alloy-rpc-types-engine = "=2.3.0"
+alloy-rpc-types-eth = "=2.3.0"
 clap = { version = "4.5", features = ["derive"] }
 cosmos-auth = { path = "crates/cosmos-auth" }
 eyre = "0.6"
 jsonrpsee = { version = "0.26", features = ["server"] }
-reth-basic-payload-builder = { path = "vendor/reth/crates/payload/basic" }
-reth-chainspec = { path = "vendor/reth/crates/chainspec" }
-reth-codecs = "=0.5.2"
-reth-consensus = { path = "vendor/reth/crates/consensus/consensus" }
-reth-consensus-common = { path = "vendor/reth/crates/consensus/common" }
-reth-engine-local = { path = "vendor/reth/crates/engine/local" }
-reth-engine-primitives = { path = "vendor/reth/crates/engine/primitives" }
-reth-errors = { path = "vendor/reth/crates/errors" }
-reth-ethereum = { path = "vendor/reth/crates/ethereum/reth", features = ["node", "cli", "consensus"] }
-reth-ethereum-consensus = { path = "vendor/reth/crates/ethereum/consensus" }
-reth-ethereum-engine-primitives = { path = "vendor/reth/crates/ethereum/engine-primitives" }
-reth-ethereum-payload-builder = { path = "vendor/reth/crates/ethereum/payload" }
-reth-evm = { path = "vendor/reth/crates/evm/evm" }
-reth-evm-ethereum = { path = "vendor/reth/crates/ethereum/evm" }
-reth-execution-cache = { path = "vendor/reth/crates/engine/execution-cache" }
-reth-execution-types = { path = "vendor/reth/crates/evm/execution-types" }
-reth-node-api = { path = "vendor/reth/crates/node/api" }
-reth-node-builder = { path = "vendor/reth/crates/node/builder" }
-reth-node-ethereum = { path = "vendor/reth/crates/ethereum/node" }
-reth-payload-builder = { path = "vendor/reth/crates/payload/builder" }
-reth-payload-builder-primitives = { path = "vendor/reth/crates/payload/builder-primitives" }
-reth-payload-primitives = { path = "vendor/reth/crates/payload/primitives" }
-reth-primitives-traits = { version = "=0.5.2", features = ["reth-codec"] }
-reth-provider = { path = "vendor/reth/crates/storage/provider" }
-reth-revm = { path = "vendor/reth/crates/revm" }
-reth-rpc = { path = "vendor/reth/crates/rpc/rpc" }
-reth-rpc-convert = { path = "vendor/reth/crates/rpc/rpc-convert" }
-reth-rpc-eth-types = { path = "vendor/reth/crates/rpc/rpc-eth-types" }
-reth-storage-api = { path = "vendor/reth/crates/storage/storage-api" }
-reth-storage-errors = { path = "vendor/reth/crates/storage/errors" }
-reth-transaction-pool = { path = "vendor/reth/crates/transaction-pool" }
-revm = "=41.0.0"
+reth-basic-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-chainspec = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-codecs = "=0.6.0"
+reth-consensus = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-consensus-common = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-engine-local = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-engine-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2", features = ["node", "cli", "consensus"] }
+reth-ethereum-consensus = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-ethereum-engine-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-ethereum-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-evm = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-evm-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-execution-cache = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-execution-types = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-node-api = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-node-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-node-ethereum = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-payload-builder = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-payload-builder-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-payload-primitives = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-primitives-traits = { version = "=0.6.0", features = ["reth-codec"] }
+reth-provider = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-revm = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-rpc = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-rpc-convert = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-rpc-eth-types = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-storage-api = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-storage-errors = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+reth-transaction-pool = { git = "https://github.com/paradigmxyz/reth", tag = "v2.5.2" }
+revm = "=42.0.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 tokio = { version = "1", features = ["sync"] }
 tracing = "0.1"
 
 [dev-dependencies]
-alloy-genesis = "=2.1.1"
+alloy-genesis = "=2.3.0"
 k256 = { version = "0.13", features = ["ecdsa"] }
 
 [profile.dev]
@@ -70,4 +70,3 @@ debug = 0
 
 [workspace]
 members = ["crates/cosmos-auth"]
-exclude = ["vendor/reth"]

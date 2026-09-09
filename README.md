@@ -9,11 +9,12 @@ This local chain executes EVM transactions authorized by Cosmos secp256k1 accoun
 Prerequisites: Rust via rustup, Node.js 22.18+ (tested with 24.12), pnpm 10.30.3, Python 3, Git, Clang and a C/C++ build toolchain. The Rust toolchain is pinned to 1.97.1. Install nightly rustfmt for the format checks. Reth's first build is large; allow several minutes and roughly 15 GB of build storage.
 
 ```sh
-sh scripts/bootstrap.sh
 pnpm install --frozen-lockfile
 cargo build --locked
 pnpm start
 ```
+
+Cargo fetches Reth directly from GitHub using the `v2.5.2` tag and stores it in its normal dependency cache. No `vendor/` directory or manual clone is needed. Optionally run `sh scripts/bootstrap.sh` to verify dependency pins and prefetch the locked dependencies before building.
 
 In another terminal:
 
@@ -59,11 +60,11 @@ The launch script bounds each pool subpool to 1,024 transactions and 16 MB, with
 
 ## Source and validation boundaries
 
-Reth is pinned to [v2.4.1](https://github.com/paradigmxyz/reth/releases/tag/v2.4.1), commit `8eb210175687c9f0c889a3b6795c16781d830e3a`. `scripts/bootstrap.sh` fetches that unmodified revision. Alloy and `reth-codecs` are ordinary locked registry dependencies. There are no upstream source patches. `scripts/verify-source.py` checks the source revision, clean checkout, and dependency boundaries.
+Reth dependencies point directly to [GitHub](https://github.com/paradigmxyz/reth) using Cargo's `git` field and `tag = "v2.5.2"`. `Cargo.lock` records the tag's resolved commit for reproducible builds. Alloy and `reth-codecs` are ordinary locked registry dependencies. There are no upstream source patches. `scripts/verify-source.py` checks the manifest pins, resolved Git revision, and dependency sources.
 
 The executable uses a local `CosmosNode` with chain-owned transaction primitives, consensus, EVM, pool, payload, and RPC adapters. Standard Ethereum transactions are wrapped unchanged in the upstream Alloy envelope. Generic upstream codecs retain the original database layout. [VENDOR.md](VENDOR.md) maps the components and documents the portions adapted from Reth that still need review during upgrades.
 
-Existing chain data can be reused after rebuilding. When upgrading from the initial implementation, bootstrap removes only its recognized Reth patch and preserves unexpected user changes by failing. No genesis or database migration is needed.
+Existing chain data can be reused after rebuilding. No genesis or database migration is needed. Old local Reth checkouts are no longer used; the build and bootstrap scripts leave them untouched.
 
 Authorization is checked during sender recovery, including the unchecked and buffered paths, and again during pre-execution block validation. Block import validates signatures even without pool admission. Execution uses ordinary EIP-1559 fee rules and the recovered Cosmos sender; receipts retain type `0x7e`. Existing Ethereum transaction types retain their original authorization.
 
